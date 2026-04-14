@@ -1522,16 +1522,21 @@
     
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
-    const activeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(a => {
-            a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
-          });
+    function updateActiveNav() {
+      const navHeight = navbar.offsetHeight;
+      const scrollY = window.scrollY + navHeight + 10;
+      let current = '';
+      sections.forEach(section => {
+        if (section.offsetTop <= scrollY) {
+          current = section.id;
         }
       });
-    }, { threshold: 0.4 });
-    sections.forEach(s => activeObserver.observe(s));
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
 
     
     function handleFormSubmit() {
